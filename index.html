@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>UK tax code decoder — what 1257L, K475, BR and D0 actually mean</title>
+<meta name="description" content="Decode any UK tax code. Explains the allowance, the rate, Scottish S and Welsh C prefixes, K codes, and emergency M1/W1 codes, against current HMRC rates.">
+<meta name="keywords" content="uk tax code decoder, what does 1257l mean, k tax code explained, br tax code, d0 tax code, 0t tax code, emergency tax code m1 w1, scottish tax code s prefix, welsh tax code c prefix, tax code checker">
+<link rel="canonical" href="https://hadidevlabx.github.io/uk-tax-code/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2318181b'/%3E%3Cpath d='M14 44V34M26 44V28M38 44V22M50 40V14' stroke='%23fff' stroke-width='7' stroke-linecap='round'/%3E%3Ccircle cx='50' cy='48' r='4.5' fill='%23f59e0b'/%3E%3C/svg%3E">
+<style>
+  :root{--ink:#1c1917;--mid:#57534e;--line:#e7e5e4;--bg:#fafaf9;--card:#fff;--acc:#b45309}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:16px/1.65 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:44rem;margin:0 auto;padding:2.5rem 1.25rem 5rem}
+  .brand{display:flex;align-items:center;gap:.7rem;margin:0 0 2rem;
+         text-decoration:none;color:var(--ink)}
+  .brand svg{width:34px;height:34px;flex:none;border-radius:8px}
+  .brand b{font-size:.95rem;font-weight:600;letter-spacing:-.01em}
+  .brand span{display:block;font-size:.8rem;font-weight:400;color:var(--mid)}
+  h1{font-size:1.85rem;line-height:1.2;margin:0 0 .5rem;letter-spacing:-.02em}
+  h2{font-size:1.15rem;margin:2.5rem 0 .75rem;letter-spacing:-.01em}
+  h3{font-size:1rem;margin:1.5rem 0 .35rem}
+  p{color:var(--mid)}
+  .lede{font-size:1.08rem;color:var(--mid);margin:0 0 1.75rem}
+  a{color:var(--acc)}
+  label{display:block;font-size:.85rem;font-weight:600;margin:0 0 .4rem;color:var(--ink)}
+  #code{width:100%;font:600 1.5rem/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+        text-transform:uppercase;padding:.7rem .85rem;border:1px solid var(--line);
+        border-radius:.5rem;background:var(--card);color:var(--ink);letter-spacing:.06em}
+  #code:focus{outline:2px solid var(--acc);outline-offset:1px}
+  .egs{margin:.6rem 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:.4rem}
+  .egs button{font:.8rem/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+              padding:.35rem .55rem;border:1px solid var(--line);border-radius:.35rem;
+              background:var(--card);color:var(--mid);cursor:pointer}
+  .egs button:hover{border-color:var(--acc);color:var(--acc)}
+  #out{margin-top:1.5rem;border:1px solid var(--line);border-radius:.6rem;
+       background:var(--card);padding:1.1rem 1.25rem}
+  #out h2{margin:0 0 .5rem;font-size:1.05rem}
+  #out p{margin:.4rem 0}
+  .rows{margin:.9rem 0 0;border-top:1px solid var(--line)}
+  .row{display:flex;justify-content:space-between;gap:1rem;
+       padding:.45rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
+  .row dt{color:var(--mid);margin:0}
+  .row dd{margin:0;font-weight:600;text-align:right}
+  .warn{color:#b91c1c}
+  .scroll{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;margin:.5rem 0}
+  th,td{text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-weight:600}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.875rem;
+       background:var(--line);padding:.1rem .35rem;border-radius:.25rem}
+  .note{border-left:3px solid var(--acc);background:var(--card);
+        padding:.15rem 1rem;margin:1.5rem 0;border-radius:0 .4rem .4rem 0}
+  footer{margin-top:3.5rem;padding-top:1.5rem;border-top:1px solid var(--line);
+         font-size:.9rem;color:var(--mid)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="brand" href="https://truetakehome.co.uk/">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true">
+    <rect width="64" height="64" rx="14" fill="#18181b"/>
+    <path d="M14 44V34M26 44V28M38 44V22M50 40V14" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="50" cy="48" r="4.5" fill="#f59e0b"/>
+  </svg>
+  <b>True Take-Home<span>Open tools for UK payroll</span></b>
+</a>
+
+<h1>UK tax code decoder</h1>
+<p class="lede">Type a tax code. It tells you the allowance it grants, the rate
+it applies, and whether it is an emergency code — for England, Wales and
+Scotland.</p>
+
+<label for="code">Your tax code</label>
+<input id="code" type="text" inputmode="text" autocomplete="off" spellcheck="false"
+       placeholder="1257L" aria-describedby="out">
+<ul class="egs">
+  <li><button type="button" data-eg="1257L">1257L</button></li>
+  <li><button type="button" data-eg="K475">K475</button></li>
+  <li><button type="button" data-eg="BR">BR</button></li>
+  <li><button type="button" data-eg="D0">D0</button></li>
+  <li><button type="button" data-eg="0T">0T</button></li>
+  <li><button type="button" data-eg="S1257L">S1257L</button></li>
+  <li><button type="button" data-eg="SD1">SD1</button></li>
+  <li><button type="button" data-eg="1257L M1">1257L M1</button></li>
+  <li><button type="button" data-eg="1131N">1131N</button></li>
+  <li><button type="button" data-eg="NT">NT</button></li>
+</ul>
+
+<div id="out" aria-live="polite"></div>
+
+<h2>What each part means</h2>
+
+<div class="scroll">
+<table>
+<tr><th>Part</th><th>Meaning</th></tr>
+<tr><td><code>1257</code></td><td>The number is your tax-free allowance with the last digit dropped. Multiply by 10: 1257 → £12,570</td></tr>
+<tr><td><code>L</code></td><td>The standard Personal Allowance</td></tr>
+<tr><td><code>M</code></td><td>Marriage Allowance — you <strong>received</strong> 10% of your partner's allowance</td></tr>
+<tr><td><code>N</code></td><td>Marriage Allowance — you <strong>transferred</strong> 10% of yours to your partner</td></tr>
+<tr><td><code>T</code></td><td>Other calculations are included, or HMRC is reviewing an item in your code</td></tr>
+<tr><td><code>0T</code></td><td>No allowance at all. Often a new job with no P45, or an allowance already used up</td></tr>
+<tr><td><code>BR</code></td><td>Every pound taxed at basic rate. Normally a second job or a pension</td></tr>
+<tr><td><code>D0</code> / <code>D1</code></td><td>Every pound at higher / additional rate</td></tr>
+<tr><td><code>NT</code></td><td>No tax at all on this income</td></tr>
+<tr><td><code>K</code> prefix</td><td>Deductions exceed your allowance, so the number is <strong>added</strong> to taxable pay rather than subtracted. Capped: it can never take more than half the payment</td></tr>
+<tr><td><code>S</code> prefix</td><td>Scottish rates — six bands, not three</td></tr>
+<tr><td><code>C</code> prefix</td><td>Welsh rates (<em>Cymru</em>). Currently identical to England's</td></tr>
+<tr><td><code>W1</code> <code>M1</code> <code>X</code></td><td>Emergency, non-cumulative. Each payslip is taxed in isolation, ignoring what you earned earlier in the year</td></tr>
+</table>
+</div>
+
+<div class="note">
+<p><strong>Scotland is not England with different numbers.</strong> An
+<code>S</code> code runs against six bands — 19%, 20%, 21%, 42%, 45% and 48% —
+where England has three. That is why <code>SD0</code> means 21% while
+<code>D0</code> means 40%: the D-codes count <em>bands above basic</em>, and
+Scotland has more of them. National Insurance is reserved and does not change.</p>
+</div>
+
+<h2>Common questions</h2>
+
+<h3>Why did my tax code change?</h3>
+<p>Usually a benefit in kind (a company car, medical insurance), an
+underpayment being collected through the code, or expenses being allowed. Each
+adjusts the number up or down. HMRC sends a coding notice explaining it.</p>
+
+<h3>Is an emergency tax code bad?</h3>
+<p>Not permanently. <code>M1</code>, <code>W1</code> and <code>X</code> mean
+each pay period is taxed on its own, so you often overpay at first. It corrects
+once HMRC has a full picture, and anything overpaid comes back.</p>
+
+<h3>What does a K code really cost me?</h3>
+<p>A K code adds to taxable pay instead of subtracting from it — but there is a
+50% overriding limit, so no single payment can lose more than half to tax
+through the code. The rest is carried forward.</p>
+
+<h2>Take it further</h2>
+
+<p>This decoder explains the code. To see what it does to an actual salary —
+your take-home, month by month, with the code applied — use the
+<a href="https://truetakehome.co.uk/tax-code-checker/">tax code checker</a> on
+True Take-Home, which pairs the code with a wage. There are also written
+explainers for individual codes such as
+<a href="https://truetakehome.co.uk/tax-code/1257l/">1257L</a> and
+<a href="https://truetakehome.co.uk/tax-code/br/">BR</a>.</p>
+
+<p>Related: the <a href="https://truetakehome.co.uk/income-tax-calculator/">income
+tax calculator</a>, the <a href="https://truetakehome.co.uk/scottish-income-tax-calculator/">Scottish
+income tax calculator</a> for <code>S</code> codes, and the
+<a href="https://truetakehome.co.uk/payslip-checker/">payslip checker</a> if the
+figure on your payslip looks wrong.</p>
+
+<p>The rates this page runs on are the open dataset at
+<a href="https://github.com/HadiDevLabx/uk-tax-rates">uk-tax-rates</a> — free
+JSON, one file per tax year, fetched live from the CDN at page load.</p>
+
+<div class="note">
+<p><strong>No warranty.</strong> This explains published HMRC rules and is not
+tax advice. Your coding notice from HMRC is the authority on your own code.</p>
+</div>
+
+<footer>
+<p>Built alongside <a href="https://truetakehome.co.uk/">True Take-Home</a> ·
+<a href="https://github.com/HadiDevLabx/uk-tax-rates">Rates data on GitHub</a></p>
+</footer>
+
+</div>
+
+<script>
+// Fallback figures, replaced at load by the live dataset. The page must work
+// with the fetch blocked or offline, so nothing here waits on the network.
+var RATES = {
+  personalAllowance: 12570,
+  bands: {
+    england:  [["Basic rate",0.20],["Higher rate",0.40],["Additional rate",0.45]],
+    wales:    [["Basic rate",0.20],["Higher rate",0.40],["Additional rate",0.45]],
+    scotland: [["Starter rate",0.19],["Basic rate",0.20],["Intermediate rate",0.21],
+               ["Higher rate",0.42],["Advanced rate",0.45],["Top rate",0.48]]
+  },
+  year: "2026/27"
+};
+
+fetch("https://cdn.jsdelivr.net/gh/HadiDevLabx/uk-tax-rates@main/data/latest.json")
+  .then(function (r) { return r.json(); })
+  .then(function (d) {
+    RATES.personalAllowance = d.incomeTax.personalAllowance;
+    RATES.year = d.meta.taxYear;
+    for (var k in d.incomeTax.bands) {
+      RATES.bands[k] = d.incomeTax.bands[k].map(function (b) { return [b.label, b.rate]; });
+    }
+    if (input.value.trim()) render(input.value);
+  })
+  .catch(function () { /* fallback figures stand */ });
+
+var input = document.getElementById("code");
+var out = document.getElementById("out");
+var gbp = function (n) { return "£" + n.toLocaleString("en-GB"); };
+var pct = function (r) { return Math.round(r * 1000) / 10 + "%"; };
+
+/**
+ * Decode a UK tax code into { title, lines[], rows[], warn }.
+ *
+ * Order matters: the region prefix comes off first, then the non-cumulative
+ * suffix, and only then is the remainder matched — otherwise "S1257L M1" hits
+ * none of the patterns. D-codes are resolved by INDEX into the region's band
+ * list rather than by hardcoded rate, which is what makes SD0 come out at 21%
+ * (Scotland's third band) while D0 is 40% (England's second).
+ */
+function decode(raw) {
+  var s = String(raw).toUpperCase().replace(/[^A-Z0-9]/g, "");
+  if (!s) return null;
+
+  var region = "england", regionLabel = "England and Northern Ireland";
+  if (s[0] === "S") { region = "scotland"; regionLabel = "Scotland"; s = s.slice(1); }
+  else if (s[0] === "C") { region = "wales"; regionLabel = "Wales"; s = s.slice(1); }
+
+  var emergency = false;
+  var m = s.match(/(W1|M1|X)$/);
+  if (m) { emergency = true; s = s.slice(0, -m[1].length); }
+
+  var bands = RATES.bands[region] || RATES.bands.england;
+  var r = { region: regionLabel, emergency: emergency, rows: [], lines: [] };
+
+  if (s === "NT") {
+    r.title = "No tax is deducted from this income";
+    r.lines.push("NT means exactly that: nothing is taken. It is rare, and usually applies to someone not resident for UK tax, or to particular kinds of income that are not taxable here.");
+    r.rows.push(["Tax deducted", "None"]);
+    return r;
+  }
+
+  if (s === "BR") {
+    r.title = "Every pound taxed at the basic rate";
+    r.lines.push("BR gives no allowance at all on this income and taxes all of it at one rate. That is normally right when your allowance is already used up by a main job, so a second job or a pension is coded BR.");
+    r.rows.push(["Allowance on this income", "None"], ["Rate", pct(bands[region === "scotland" ? 1 : 0][1])]);
+    return r;
+  }
+
+  var d = s.match(/^D([0-9])$/);
+  if (d) {
+    // D0 is the first band above basic. England: index 1. Scotland: index 2,
+    // because its basic rate sits at index 1 behind a 19% starter band.
+    var base = region === "scotland" ? 2 : 1;
+    var band = bands[base + Number(d[1])];
+    r.title = band ? "Every pound taxed at the " + band[0].toLowerCase() : "Unrecognised D code";
+    if (!band) { r.warn = "D" + d[1] + " is not a code used in " + regionLabel + "."; return r; }
+    r.lines.push("A D code gives no allowance and taxes the whole of this income at a single rate. It usually means you have a second income and your other job is already using your allowance and lower bands.");
+    r.rows.push(["Allowance on this income", "None"], ["Rate", pct(band[1])], ["Band", band[0]]);
+    return r;
+  }
+
+  var k = s.match(/^K(\d+)$/);
+  if (k) {
+    var add = Number(k[1]) * 10;
+    r.title = "You have no allowance, and " + gbp(add) + " is added to your taxable pay";
+    r.lines.push("A K code is the reverse of a normal one. Deductions — untaxed income, a benefit in kind, tax owed from an earlier year — add up to more than your allowance, so instead of subtracting an allowance HMRC adds " + gbp(add) + " to what you are taxed on across the year.");
+    r.lines.push("There is a limit: the code can never take more than half of any single payment. Anything it cannot collect is carried forward.");
+    r.rows.push(["Added to taxable pay", gbp(add) + " a year"],
+                ["Allowance", "None"],
+                ["Overriding limit", "50% of each payment"]);
+    return r;
+  }
+
+  var n = s.match(/^(\d+)([LMNT])$/);
+  if (n) {
+    var allowance = Number(n[1]) * 10;
+    var suffix = n[2];
+    var std = RATES.personalAllowance;
+
+    if (Number(n[1]) === 0) {
+      r.title = "No tax-free allowance on this income";
+      r.lines.push("0T means your allowance is gone — either it is fully used elsewhere, or a new employer had no P45 and no details to work from. Unlike BR, the normal bands still apply, so higher earnings are taxed at higher rates.");
+      r.rows.push(["Allowance", "None"], ["Bands", "Normal " + regionLabel + " bands apply"]);
+      return r;
+    }
+
+    r.title = "You can earn " + gbp(allowance) + " before paying income tax";
+    var names = {
+      L: "the standard Personal Allowance",
+      M: "Marriage Allowance — you received 10% of your partner's allowance",
+      N: "Marriage Allowance — you transferred 10% of yours to your partner",
+      T: "other items in your code, or something HMRC is reviewing"
+    };
+    r.lines.push("The number is the allowance with its last digit dropped, so " + n[1] + " means " + gbp(allowance) + " a year. The letter " + suffix + " means " + names[suffix] + ".");
+
+    if (allowance > std) {
+      r.lines.push("That is " + gbp(allowance - std) + " above the standard " + gbp(std) + " — extra allowances such as job expenses or a professional subscription push the number up.");
+    } else if (allowance < std) {
+      r.lines.push("That is " + gbp(std - allowance) + " below the standard " + gbp(std) + ". Something is reducing it: commonly a benefit in kind like a company car or medical cover, or tax owed from a previous year being collected through the code.");
+    }
+
+    r.rows.push(["Tax-free allowance", gbp(allowance) + " a year"],
+                ["Per month", gbp(Math.round(allowance / 12))],
+                ["Standard allowance", gbp(std)],
+                ["Rates", regionLabel]);
+    return r;
+  }
+
+  r.warn = "That does not look like a UK tax code. Try 1257L, K475, BR, D0, 0T or S1257L.";
+  return r;
+}
+
+function render(raw) {
+  var r = decode(raw);
+  if (!r) { out.innerHTML = ""; return; }
+  if (r.warn && !r.title) {
+    out.innerHTML = '<p class="warn">' + r.warn + "</p>";
+    return;
+  }
+  var h = "<h2>" + r.title + "</h2>";
+  if (r.warn) h += '<p class="warn">' + r.warn + "</p>";
+  r.lines.forEach(function (p) { h += "<p>" + p + "</p>"; });
+  if (r.emergency) {
+    h += "<p><strong>This is an emergency code.</strong> The W1, M1 or X suffix "
+       + "makes it non-cumulative: each pay period is taxed on its own, ignoring "
+       + "what you have already earned this year. You often overpay at first, and "
+       + "it is corrected once HMRC has the full picture.</p>";
+  }
+  if (r.rows.length) {
+    h += '<dl class="rows">';
+    r.rows.forEach(function (row) {
+      h += '<div class="row"><dt>' + row[0] + "</dt><dd>" + row[1] + "</dd></div>";
+    });
+    h += "</dl>";
+  }
+  h += '<p style="font-size:.85rem;margin-top:.9rem">' + RATES.year
+     + " rates · " + r.region + "</p>";
+  out.innerHTML = h;
+}
+
+input.addEventListener("input", function () { render(input.value); });
+document.querySelectorAll("[data-eg]").forEach(function (b) {
+  b.addEventListener("click", function () {
+    input.value = b.dataset.eg;
+    render(input.value);
+    input.focus();
+  });
+});
+render("1257L");
+input.value = "1257L";
+</script>
+</body>
+</html>
