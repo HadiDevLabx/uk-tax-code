@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hadidevlabx.github.io/uk-tax-code/sitemap.xml
